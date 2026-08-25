@@ -24,10 +24,16 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('home')
   const [openPlanId, setOpenPlanId] = useState<string | null>(null)
   const [seedTheme, setSeedTheme] = useState<string | null>(null)
+  const [autoRun, setAutoRun] = useState(false)
 
-  // Deep-link a plan straight into the Planner from anywhere in the app.
-  const planWith = useCallback((theme: string) => {
+  /**
+   * Deep-link into the Planner from anywhere. `autoRun` generates immediately —
+   * right for "surprise us" and for a theme someone just typed, wrong for
+   * tapping an idea, where they should get to choose AI or build it by hand.
+   */
+  const planWith = useCallback((theme: string, generateNow = false) => {
     setSeedTheme(theme)
+    setAutoRun(generateNow)
     setOpenPlanId(null)
     setTab('plan')
   }, [])
@@ -54,7 +60,9 @@ export default function App() {
     <div className="app">
       {tab === 'home' ? <Home onOpenPlan={openPlan} onPlanWith={planWith} onGoIdeas={() => setTab('ideas')} /> : null}
       {tab === 'ideas' ? <Ideas onPlanWith={planWith} /> : null}
-      {tab === 'plan' ? <Planner key={seedTheme ?? 'blank'} seedTheme={seedTheme} onOpenPlan={openPlan} /> : null}
+      {tab === 'plan' ? (
+        <Planner key={seedTheme ?? 'blank'} seedTheme={seedTheme} autoRun={autoRun} onOpenPlan={openPlan} />
+      ) : null}
       {tab === 'nights' ? (
         openPlanId ? (
           <PlanDetail planId={openPlanId} onBack={() => setOpenPlanId(null)} />
@@ -73,7 +81,10 @@ export default function App() {
               className={`tab ${tab === item.id ? 'on' : ''}`}
               aria-current={tab === item.id ? 'page' : undefined}
               onClick={() => {
-                if (item.id === 'plan' && tab !== 'plan') setSeedTheme(null)
+                if (item.id === 'plan' && tab !== 'plan') {
+                  setSeedTheme(null)
+                  setAutoRun(false)
+                }
                 if (item.id === 'nights') setOpenPlanId(null)
                 setTab(item.id)
               }}

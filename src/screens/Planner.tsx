@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Plan, Stop } from '../types'
 import { addDays, nextWeekday, todayKey } from '../lib/format'
-import { requestPlan } from '../lib/planApi'
+import { createManualPlan, requestPlan } from '../lib/planApi'
 import { useStore } from '../state/store'
 import { PlanView } from '../components/PlanView'
 import { Button, Field } from '../components/ui'
@@ -15,7 +15,16 @@ const IDEAS = [
   'rainy day, indoors, still fun',
 ]
 
-export function Planner({ seedTheme, onOpenPlan }: { seedTheme?: string | null; onOpenPlan: (id: string) => void }) {
+export function Planner({
+  seedTheme,
+  autoRun,
+  onOpenPlan,
+}: {
+  seedTheme?: string | null
+  /** Generate immediately on arrival, rather than waiting for a choice. */
+  autoRun?: boolean
+  onOpenPlan: (id: string) => void
+}) {
   const { t, state, savePlan, toast, updateWish } = useStore()
   const { profile } = state
 
@@ -65,12 +74,30 @@ export function Planner({ seedTheme, onOpenPlan }: { seedTheme?: string | null; 
   // Arriving from "plan this" elsewhere in the app: build it straight away.
   const autoRan = useRef(false)
   useEffect(() => {
-    if (seedTheme && !autoRan.current) {
+    if (seedTheme && autoRun && !autoRan.current) {
       autoRan.current = true
       generate(seedTheme)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seedTheme])
+  }, [seedTheme, autoRun])
+
+  const buildManually = () => {
+    const trimmed = theme.trim()
+    setNotice(null)
+    setDraft(
+      createManualPlan({
+        title: trimmed || t('Our evening'),
+        theme: trimmed,
+        date,
+        startTime,
+        currency: profile.currency,
+        createdBy: state.settings.me,
+        area: profile.homeCity,
+        firstStop: trimmed || undefined,
+      }),
+    )
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const patchDraft = (patch: Partial<Plan>) => setDraft((current) => (current ? { ...current, ...patch } : current))
 
@@ -133,9 +160,11 @@ export function Planner({ seedTheme, onOpenPlan }: { seedTheme?: string | null; 
                 💾 {t('Save this evening')}
               </Button>
               <div className="row" style={{ gap: 8 }}>
-                <Button block busy={busy} onClick={() => generate(theme)}>
-                  🔁 {t('Try a different plan')}
-                </Button>
+                {draft.source === 'manual' ? null : (
+                  <Button block busy={busy} onClick={() => generate(theme)}>
+                    🔁 {t('Try a different plan')}
+                  </Button>
+                )}
                 <Button block variant="ghost" onClick={() => setDraft(null)}>
                   {t('Start over')}
                 </Button>
@@ -151,21 +180,31 @@ export function Planner({ seedTheme, onOpenPlan }: { seedTheme?: string | null; 
     <div className="screen">
       <div className="screen-head">
         <h1>{t('Plan a night')}</h1>
-        <span className="sub">{t('Describe the night you want. Change anything after.')}</span>
+        <span className="sub">
+          {seedTheme ? t('From your ideas. Build it however you like.') : t('Describe the night you want. Change anything after.')}
+        </span>
       </div>
 
-      <div className="themebox">
-        <input
-          value={theme}
-          onChange={(event) => setTheme(event.target.value)}
-          onKeyDown={(event) => event.key === 'Enter' && generate(theme)}
-          placeholder={t('bowling at evening near Tel Aviv')}
-          aria-label={t('Date night theme')}
-        />
-        <Button variant="primary" busy={busy} onClick={() => generate(theme)} aria-label={t('Build the plan')}>
-          ✨
+      <input
+        className="input"
+        value={theme}
+        onChange={(event) => setTheme(event.target.value)}
+        onKeyDown={(event) => event.key === 'Enter' && generate(theme)}
+        placeholder={t('bowling at evening near Tel Aviv')}
+        aria-label={t('Date night theme')}
+      />
+
+      <div className="row" style={{ gap: 8 }}>
+        <Button block variant="primary" busy={busy} onClick={() => generate(theme)}>
+          ✨ {t('Build it for me')}
+        </Button>
+        <Button block onClick={buildManually}>
+          ✏️ {t('Build it myself')}
         </Button>
       </div>
+      <span className="faint center" style={{ marginTop: -6 }}>
+        {t('Build it yourself and nothing is generated — you lay out the stops.')}
+      </span>
 
       <div className="scroller">
         {IDEAS.map((idea) => (

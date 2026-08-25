@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { cloneElement, isValidElement, useEffect, useId, useRef, useState, type ReactElement, type ReactNode } from 'react'
 
 export function Button({
   children,
@@ -56,12 +56,31 @@ export function Chip({
   )
 }
 
+/**
+ * Labels a form control. The label is wired to the control with htmlFor/id so
+ * screen readers (and tests) can associate them — the id is injected into the
+ * child rather than asked for at every call site.
+ */
 export function Field({ label, hint, children }: { label?: string; hint?: string; children: ReactNode }) {
+  const id = useId()
+  const hintId = `${id}-hint`
+  const control =
+    isValidElement(children) && !(children.props as { id?: string }).id
+      ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+          id,
+          ...(hint ? { 'aria-describedby': hintId } : {}),
+        })
+      : children
+
   return (
     <div className="field">
-      {label ? <label>{label}</label> : null}
-      {children}
-      {hint ? <span className="hint">{hint}</span> : null}
+      {label ? <label htmlFor={id}>{label}</label> : null}
+      {control}
+      {hint ? (
+        <span className="hint" id={hintId}>
+          {hint}
+        </span>
+      ) : null}
     </div>
   )
 }
@@ -181,14 +200,18 @@ export function TagInput({
   onChange,
   placeholder,
   suggestions = [],
+  id: providedId,
 }: {
   value: string[]
   onChange: (value: string[]) => void
   placeholder?: string
   suggestions?: string[]
+  /** Injected by `Field` so its label points at the text input. */
+  id?: string
 }) {
   const [draft, setDraft] = useState('')
-  const id = useId()
+  const fallbackId = useId()
+  const id = providedId ?? fallbackId
 
   const commit = (raw: string) => {
     const parts = raw

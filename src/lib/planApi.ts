@@ -72,6 +72,84 @@ async function postPlan<T>(body: unknown): Promise<{ ok: true; data: T } | { ok:
   }
 }
 
+/** An empty stop for someone building an evening by hand. */
+export function blankStop(startTime: string, overrides: Partial<Stop> = {}): Stop {
+  return {
+    title: 'New stop',
+    kind: 'activity',
+    venueName: '',
+    area: '',
+    address: '',
+    description: '',
+    why: '',
+    startTime,
+    durationMin: 60,
+    costPerPerson: 0,
+    mapsQuery: '',
+    tips: '',
+    booking: { method: 'walk_in', url: '', phone: '', notes: '', leadTime: '' },
+    alternatives: [],
+    id: uid('stop'),
+    bookingStatus: 'not_needed',
+    locked: false,
+    ...overrides,
+  }
+}
+
+/**
+ * A plan with nothing generated in it. Used by "build it myself" — no API call,
+ * no template library, just a dated shell with one stop to start editing.
+ */
+export function createManualPlan(opts: {
+  title: string
+  theme: string
+  date: string
+  startTime: string
+  currency: string
+  createdBy: Partner | 'unknown'
+  area?: string
+  firstStop?: string
+}): Plan {
+  const timestamp = nowIso()
+  const stops = opts.firstStop
+    ? [
+        blankStop(opts.startTime, {
+          title: opts.firstStop,
+          venueName: opts.firstStop,
+          area: opts.area || '',
+          mapsQuery: `${opts.firstStop} ${opts.area || ''}`.trim(),
+        }),
+      ]
+    : []
+
+  return {
+    id: uid('plan'),
+    title: opts.title,
+    summary: '',
+    theme: opts.theme,
+    vibeTags: [],
+    date: opts.date,
+    stops,
+    currency: opts.currency,
+    totalCostPerPerson: 0,
+    dressCode: '',
+    travelNotes: '',
+    weatherNote: '',
+    backupPlan: '',
+    bookingChecklist: [],
+    status: 'draft',
+    source: 'manual',
+    createdBy: opts.createdBy,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    calendarExportedAt: null,
+    rating: null,
+    memoryNote: '',
+    actualCostPerPerson: null,
+    wouldRepeat: null,
+  }
+}
+
 export function attachStopFields(generated: GeneratedStop): Stop {
   return {
     ...generated,

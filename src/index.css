@@ -165,6 +165,8 @@ a { color: var(--accent); }
 .btn.danger { color: var(--accent); border-color: transparent; background: transparent; }
 .btn.small { min-height: 34px; padding: 0 12px; font-size: 0.85rem; }
 .btn.block { width: 100%; }
+/* Side-by-side block buttons must share the row, not each claim all of it. */
+.row > .btn.block { flex: 1 1 0; width: auto; min-width: 0; white-space: normal; }
 .btn.onhero { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.32); color: #fff; backdrop-filter: blur(6px); }
 
 .iconbtn {

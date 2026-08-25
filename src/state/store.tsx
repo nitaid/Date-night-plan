@@ -95,7 +95,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const toast = useCallback((message: string, tone: Toast['tone'] = 'info') => {
     const item = { id: uid('toast'), message, tone }
-    setToasts((current) => [...current, item])
+    setToasts((current) => {
+      // Repeating a message already on screen just stacks noise; keep at most three.
+      if (current.some((existing) => existing.message === message)) return current
+      return [...current, item].slice(-3)
+    })
     window.setTimeout(() => setToasts((current) => current.filter((x) => x.id !== item.id)), 4200)
   }, [])
 

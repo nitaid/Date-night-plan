@@ -9,7 +9,7 @@ export function Home({
   onGoIdeas,
 }: {
   onOpenPlan: (id: string) => void
-  onPlanWith: (theme: string) => void
+  onPlanWith: (theme: string, generateNow?: boolean) => void
   onGoIdeas: () => void
 }) {
   const { t, state, language, setSettings } = useStore()
@@ -53,10 +53,10 @@ export function Home({
     const source = loved.length ? loved : pool
     if (source.length) {
       const pick = source[Math.floor(Math.random() * source.length)]
-      onPlanWith(`${pick.title}${pick.location ? ` near ${pick.location}` : profile.homeCity ? ` near ${profile.homeCity}` : ''}`)
+      onPlanWith(`${pick.title}${pick.location ? ` near ${pick.location}` : profile.homeCity ? ` near ${profile.homeCity}` : ''}`, true)
       return
     }
-    onPlanWith(t('surprise us with something we would not think of, near {city}', { city: profile.homeCity || 'us' }))
+    onPlanWith(t('surprise us with something we would not think of, near {city}', { city: profile.homeCity || 'us' }), true)
   }
 
   return (
@@ -131,7 +131,7 @@ export function Home({
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 const value = (event.target as HTMLInputElement).value.trim()
-                if (value) onPlanWith(value)
+                if (value) onPlanWith(value, true)
               }
             }}
           />

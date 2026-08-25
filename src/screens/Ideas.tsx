@@ -6,8 +6,15 @@ import { Button, Chip, Empty, Field, IconButton, Segmented, Sheet, TagInput } fr
 
 const TAG_SUGGESTIONS = ['food', 'outdoors', 'cheap', 'splurge', 'active', 'cosy', 'culture', 'weekend', 'day trip', 'rainy day']
 
+/** What gets handed to the planner when you build an idea. */
+function themeFor(item: WishItem): string {
+  return [item.title, item.location ? `near ${item.location}` : '', item.notes ? `— ${item.notes}` : '']
+    .filter(Boolean)
+    .join(' ')
+}
+
 export function Ideas({ onPlanWith }: { onPlanWith: (theme: string) => void }) {
-  const { t, language, state, addWish, updateWish, removeWish, toggleHeart, me } = useStore()
+  const { t, language, state, addWish, updateWish, removeWish, toggleHeart, toast, me } = useStore()
   const [filter, setFilter] = useState<WishStatus | 'all'>('idea')
   const [query, setQuery] = useState('')
   const [tagFilter, setTagFilter] = useState<string | null>(null)
@@ -30,6 +37,25 @@ export function Ideas({ onPlanWith }: { onPlanWith: (theme: string) => void }) {
       .sort((a, b) => b.hearts.length - a.hearts.length || b.createdAt.localeCompare(a.createdAt))
   }, [state.wishlist, filter, tagFilter, query])
 
+  const exactMatch = state.wishlist.some((item) => item.title.trim().toLowerCase() === query.trim().toLowerCase())
+
+  /** Empty box opens the full form; anything typed is saved on the spot. */
+  const quickAdd = () => {
+    const title = query.trim()
+    if (!title) {
+      setCreating(true)
+      return
+    }
+    if (exactMatch) {
+      toast(t('"{title}" is already on your list.', { title }), 'info')
+      return
+    }
+    addWish({ title })
+    setQuery('')
+    setFilter('idea')
+    toast(t('Added to your ideas.'), 'good')
+  }
+
   return (
     <div className="screen">
       <div className="screen-head">
@@ -38,11 +64,24 @@ export function Ideas({ onPlanWith }: { onPlanWith: (theme: string) => void }) {
       </div>
 
       <div className="themebox">
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('Search ideas')} />
-        <Button variant="primary" onClick={() => setCreating(true)} aria-label={t('Add an idea')}>
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onKeyDown={(event) => event.key === 'Enter' && quickAdd()}
+          placeholder={t('Add an idea, or search')}
+          aria-label={t('Add an idea, or search')}
+        />
+        <Button variant="primary" onClick={quickAdd} aria-label={query.trim() ? t('Add this idea') : t('Add an idea')}>
           ＋
         </Button>
       </div>
+
+      {query.trim() && !exactMatch ? (
+        <button type="button" className="card tight accent" onClick={quickAdd} style={{ cursor: 'pointer', textAlign: 'start' }}>
+          <strong>＋ {t('Add "{title}"', { title: query.trim() })}</strong>
+          <span className="faint">{t('Saved straight away — add the details whenever you feel like it.')}</span>
+        </button>
+      ) : null}
 
       <Segmented
         value={filter}
@@ -77,11 +116,14 @@ export function Ideas({ onPlanWith }: { onPlanWith: (theme: string) => void }) {
               <div className="row between top">
                 <button
                   type="button"
-                  onClick={() => setEditing(item)}
+                  onClick={() => onPlanWith(themeFor(item))}
                   className="grow"
                   style={{ background: 'none', border: 0, padding: 0, textAlign: 'start', cursor: 'pointer', minWidth: 0 }}
+                  title={t('Build this into an evening')}
                 >
-                  <h3>{item.title}</h3>
+                  <h3>
+                    {item.title} <span className="faint">›</span>
+                  </h3>
                   {item.notes ? <p className="muted">{item.notes}</p> : null}
                 </button>
                 <IconButton
@@ -105,14 +147,11 @@ export function Ideas({ onPlanWith }: { onPlanWith: (theme: string) => void }) {
                 ))}
               </div>
               <div className="row wrap" style={{ gap: 6 }}>
-                <Button
-                  size="small"
-                  variant="primary"
-                  onClick={() =>
-                    onPlanWith(`${item.title}${item.location ? ` near ${item.location}` : ''}${item.notes ? ` — ${item.notes}` : ''}`)
-                  }
-                >
-                  ✨ {t('Plan this')}
+                <Button size="small" variant="primary" onClick={() => onPlanWith(themeFor(item))}>
+                  ✨ {t('Build this')}
+                </Button>
+                <Button size="small" onClick={() => setEditing(item)}>
+                  ✏️ {t('Edit')}
                 </Button>
                 {item.status !== 'done' ? (
                   <Button size="small" onClick={() => updateWish(item.id, { status: 'done' })}>
@@ -136,7 +175,7 @@ export function Ideas({ onPlanWith }: { onPlanWith: (theme: string) => void }) {
         <Empty
           glyph="💡"
           title={t('Nothing here yet')}
-          body={t('Add the things you keep saying you should do.')}
+          body={t('Type one in the box above and it is saved instantly — no form to fill in.')}
           action={
             <Button variant="primary" onClick={() => setCreating(true)}>
               ＋ {t('Add an idea')}

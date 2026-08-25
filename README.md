@@ -116,6 +116,11 @@ Node process with no dependencies beyond what's already installed.
 2–4 stops that flow in one direction geographically, with realistic timings,
 travel gaps, per-person costs, dress code, weather note and a backup plan.
 
+**Or build it yourself** — every plan screen offers "build it for me" and
+"build it myself" side by side. The second makes no API call and generates
+nothing: you get a dated shell and lay out the stops by hand, with the same
+editing, booking tracking and calendar export as a generated plan.
+
 **Change anything** — swap any stop for one of its alternatives, ask for
 "something else here" (optionally telling it what you'd rather do), edit any
 detail by hand, add a blank stop, pull a stop in from your ideas list, or lock
@@ -127,9 +132,13 @@ or the whole evening as one) and Outlook. Optional reminder before you set off
 and travel-time blocks between stops. Times are floating local time, so nothing
 shifts when you travel.
 
-**Ideas** — a shared wishlist. Each of you hearts things independently; two
-hearts means you both want it. Tag, search, filter, note a rough cost and a
-link, and turn any idea into a full plan in one tap.
+**Ideas** — a shared wishlist, built for jotting something down before you
+forget it. The box at the top is both search and quick-add: type "kayaking on
+the Yarkon", hit enter, done — no form, no fields. Fill in notes, tags, cost
+and a link later if you ever want to. Tapping any idea takes you to the build
+screen with it already filled in, where you pick AI or by hand.
+
+Each of you hearts ideas independently; two hearts means you both want it.
 
 **Booking** — each stop tracks whether it's still to book, booked or confirmed,
 with a phone link, booking link, map link and Waze link, plus a checklist of

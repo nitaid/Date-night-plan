@@ -305,6 +305,27 @@ export const he: Record<string, string> = {
   'That file did not look like a backup.': 'הקובץ הזה לא נראה כמו גיבוי.',
   'Date Night · built for two': 'ערב זוגי · נבנה לשניים',
 
+  // Quick add + build-it-yourself
+  'Add an idea, or search': 'הוספת רעיון, או חיפוש',
+  'Add this idea': 'להוסיף את הרעיון',
+  'Add "{title}"': 'הוספת "{title}"',
+  'Saved straight away — add the details whenever you feel like it.':
+    'נשמר מיד — אפשר להוסיף פרטים מתי שבא לכם.',
+  '"{title}" is already on your list.': '"{title}" כבר ברשימה שלכם.',
+  'Added to your ideas.': 'נוסף לרעיונות שלכם.',
+  'Build this': 'לבנות את זה',
+  'Build this into an evening': 'להפוך את זה לערב שלם',
+  'Type one in the box above and it is saved instantly — no form to fill in.':
+    'כתבו בתיבה למעלה וזה יישמר מיד — בלי למלא טופס.',
+  'Build it myself': 'אני אבנה בעצמי',
+  'Build it for me': 'בנו לי',
+  'Build it yourself and nothing is generated — you lay out the stops.':
+    'אם תבנו בעצמכם שום דבר לא נוצר אוטומטית — אתם מסדרים את העצירות.',
+  'From your ideas. Build it however you like.': 'מהרעיונות שלכם. תבנו את זה איך שבא לכם.',
+  'Our evening': 'הערב שלנו',
+  'You built this one yourself.': 'את זה בניתם בעצמכם.',
+  'New stop': 'עצירה חדשה',
+
   // Fallback notices. The offline planner writes English, so the Hebrew copy
   // says so outright rather than leaving it looking like a bug.
   'No AI key is set up, so this plan came from the built-in planner. The built-in planner only writes in English.':

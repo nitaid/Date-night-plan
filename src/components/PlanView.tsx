@@ -1,34 +1,12 @@
 import { useMemo, useState } from 'react'
 import type { Plan, Stop, WishItem } from '../types'
-import { addMinutes, eveningMinutes, formatDate, formatDuration, formatMoney, uid } from '../lib/format'
-import { requestStop } from '../lib/planApi'
+import { addMinutes, eveningMinutes, formatDate, formatDuration, formatMoney } from '../lib/format'
+import { blankStop, requestStop } from '../lib/planApi'
 import { sharePlan } from '../lib/share'
 import { useStore } from '../state/store'
 import { CalendarSheet } from './CalendarSheet'
 import { StopCard } from './StopCard'
 import { Button, Chip, Empty, Field, Sheet, Stars } from './ui'
-
-function blankStop(startTime: string): Stop {
-  return {
-    title: 'New stop',
-    kind: 'activity',
-    venueName: '',
-    area: '',
-    address: '',
-    description: '',
-    why: '',
-    startTime,
-    durationMin: 60,
-    costPerPerson: 0,
-    mapsQuery: '',
-    tips: '',
-    booking: { method: 'walk_in', url: '', phone: '', notes: '', leadTime: '' },
-    alternatives: [],
-    id: uid('stop'),
-    bookingStatus: 'not_needed',
-    locked: false,
-  }
-}
 
 export function PlanView({
   plan,
@@ -236,7 +214,11 @@ export function PlanView({
           </div>
         ) : null}
         <span className="tiny faint">
-          {plan.source === 'ai' ? t('Planned by Claude. Always double-check opening hours before you go.') : t('Built by the offline planner. Pick the exact venue from the map links.')}
+          {plan.source === 'ai'
+            ? t('Planned by Claude. Always double-check opening hours before you go.')
+            : plan.source === 'manual'
+              ? t('You built this one yourself.')
+              : t('Built by the offline planner. Pick the exact venue from the map links.')}
         </span>
       </div>
 
