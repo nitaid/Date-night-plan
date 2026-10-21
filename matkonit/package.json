@@ -1,0 +1,30 @@
+{
+  "name": "matkonit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "מתכונית — הופכים סרטוני מתכונים לספר מתכונים, מתכננים שבוע ארוחות ומקבלים רשימת קניות מתומחרת לפי רשת הסופר בישראל.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "start": "node server/index.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/selftest.mjs",
+    "icons": "node scripts/generate-icons.mjs",
+    "test:server": "node scripts/servertest.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.120.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9"
+  }
+}

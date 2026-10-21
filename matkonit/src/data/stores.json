@@ -1,0 +1,17 @@
+{
+  "about": "Price index relative to catalog.json (1.00 = average). Rough relative levels drawn from Israeli basket comparisons; replace with your own as you learn your branch.",
+  "stores": [
+    { "id": "osher-ad", "name": "אושר עד", "index": 0.88, "online": false, "note": "סגור בשבת" },
+    { "id": "rami-levy", "name": "רמי לוי", "index": 0.9, "online": true },
+    { "id": "hazi-hinam", "name": "חצי חינם", "index": 0.93, "online": true },
+    { "id": "yochananof", "name": "יוחננוף", "index": 0.94, "online": true },
+    { "id": "machsanei-hashuk", "name": "מחסני השוק", "index": 0.94, "online": false },
+    { "id": "victory", "name": "ויקטורי", "index": 0.96, "online": true },
+    { "id": "shufersal-deal", "name": "שופרסל דיל", "index": 1.0, "online": true },
+    { "id": "carrefour", "name": "קרפור", "index": 1.0, "online": true },
+    { "id": "shufersal-online", "name": "שופרסל אונליין", "index": 1.03, "online": true },
+    { "id": "tiv-taam", "name": "טיב טעם", "index": 1.08, "online": true, "note": "לא כשר ברובו" },
+    { "id": "shufersal-sheli", "name": "שופרסל שלי", "index": 1.1, "online": false },
+    { "id": "ampm", "name": "AM:PM", "index": 1.22, "online": false }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "מתכונית — מסרטון לצלחת",
+  "short_name": "מתכונית",
+  "description": "שומרים מתכונים מכל סרטון ואתר, מתכננים שבוע ארוחות וקונים בסופר במחיר ידוע מראש.",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf7f2",
+  "theme_color": "#d9622b",
+  "categories": ["food", "lifestyle", "shopping"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
+  "shortcuts": [
+    { "name": "ייבוא מתכון", "url": "/#/import" },
+    { "name": "רשימת הקניות", "url": "/#/list" },
+    { "name": "התפריט השבועי", "url": "/#/plan" }
+  ]
+}
